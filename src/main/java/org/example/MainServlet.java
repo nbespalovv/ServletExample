@@ -16,6 +16,8 @@ import java.util.List;
 
 @WebServlet("/")
 public class MainServlet extends HttpServlet {
+
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -33,11 +35,14 @@ public class MainServlet extends HttpServlet {
 
         File file = new File(openPath);
         File[] files = file.listFiles();
-        if (files == null)
+        if (files == null) {
             resp.sendError(404, "File not found");
+            return;
+        }
 
         SimpleDateFormat fileFormat = new SimpleDateFormat("d/M/yy, K:mm:ss a");
         List<FileDescription> fileDescriptionList = new ArrayList<>();
+
         for (File tempFile : files) {
             fileDescriptionList.add(new FileDescription(tempFile.getName(),
                     openPath + "\\" + tempFile.getName(),
@@ -45,16 +50,12 @@ public class MainServlet extends HttpServlet {
                     fileFormat.format(new Date(tempFile.lastModified())),
                     tempFile.isDirectory()));
         }
+
         req.setAttribute("date", LocalDateTime.now().format(formatter));
         req.setAttribute("back", file.getParent());
         req.setAttribute("name", openPath);
         req.setAttribute("temp", fileDescriptionList.toArray());
         req.getRequestDispatcher("mypage.jsp").forward(req, resp);
 
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
     }
 }

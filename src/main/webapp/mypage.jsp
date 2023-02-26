@@ -26,7 +26,7 @@
                         <td>
                         <a href="?path=${file.getLink()}">${file.getFileName()}</a>
                         </td>
-
+                        <td></td>
                     </c:when>
                     <c:otherwise>
                         <td>
@@ -35,10 +35,9 @@
                         <td>
                             <a href="download?path=${file.getLink()}">${file.getFileName()}</a>
                         </td>
-
+                        <td>${file.getFileSize()} B</td>
                     </c:otherwise>
                 </c:choose>
-            <td>${file.getFileSize()}</td>
             <td>${file.getDate()}</td>
         </tr>
     </c:forEach>
