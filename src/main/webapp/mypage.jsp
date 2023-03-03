@@ -1,6 +1,8 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page import="java.io.File"%>
+<%@page import="java.util.List"%>
+<%@page import="org.example.FileDescription"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html xmlns:c="http://www.w3.org/1999/XSL/Transform">
+<html>
 <head>
     <title>FileStorage</title>
 </head>
@@ -16,31 +18,36 @@
         <th>Размер</th>
         <th>Дата</th>
     </tr>
-    <c:forEach var="file" items="${temp}">
+    <%
+    List<FileDescription> files = (List<FileDescription>) request.getAttribute("files");
+    if(files == null) {
+        out.print("Files is null");
+        return;
+    }
+    for(int i = 0; i < files.size(); i++) {
+        FileDescription file = files.get(i);
+    %>
         <tr>
-                <c:choose>
-                    <c:when test="${file.isDirectory()}">
-                        <td>
-                            <img src="https://cdn-icons-png.flaticon.com/512/7525/7525173.png" width="16" height="16" alt="directory">
-                        </td>
-                        <td>
-                        <a href="?path=${file.getLink()}">${file.getFileName()}</a>
-                        </td>
-                        <td></td>
-                    </c:when>
-                    <c:otherwise>
-                        <td>
-                            <img src="https://cdn-icons-png.flaticon.com/512/7525/7525161.png" width="16" height="16" alt="file">
-                        </td>
-                        <td>
-                            <a href="download?path=${file.getLink()}">${file.getFileName()}</a>
-                        </td>
-                        <td>${file.getFileSize()} B</td>
-                    </c:otherwise>
-                </c:choose>
-            <td>${file.getDate()}</td>
+            <% if(file.isDirectory()) { %>
+                    <td>
+                        <img src="https://cdn-icons-png.flaticon.com/512/7525/7525173.png" width="16" height="16" alt="directory">
+                    </td>
+                    <td>
+                        <a href="?path=<%=file.getLink()%>"><%=file.getFileName()%></a>
+                    </td>
+                    <td></td>
+                <% } else { %>
+                    <td>
+                        <img src="https://cdn-icons-png.flaticon.com/512/7525/7525161.png" width="16" height="16" alt="file">
+                    </td>
+                    <td>
+                        <a href="download?path=<%=file.getLink()%>"><%=file.getFileName()%></a>
+                    </td>
+                    <td><%=file.getFileSize()%> B</td>
+               <% } %>
+            <td><%=file.getDate()%></td>
         </tr>
-    </c:forEach>
+    <% } %>
 </table>
 </body>
 </html>
