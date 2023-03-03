@@ -45,7 +45,7 @@ public class MainServlet extends HttpServlet {
 
         for (File tempFile : files) {
             fileDescriptionList.add(new FileDescription(tempFile.getName(),
-                    openPath + "\\" + tempFile.getName(),
+                    openPath + "/" + tempFile.getName(),
                     String.valueOf(tempFile.length()),
                     fileFormat.format(new Date(tempFile.lastModified())),
                     tempFile.isDirectory()));
@@ -54,7 +54,7 @@ public class MainServlet extends HttpServlet {
         req.setAttribute("date", LocalDateTime.now().format(formatter));
         req.setAttribute("back", file.getParent());
         req.setAttribute("name", openPath);
-        req.setAttribute("temp", fileDescriptionList.toArray());
+        req.setAttribute("files", fileDescriptionList);
         req.getRequestDispatcher("mypage.jsp").forward(req, resp);
 
     }
