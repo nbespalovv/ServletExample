@@ -1,4 +1,8 @@
-package org.example;
+package org.example.servlets;
+
+import org.example.domain.FileDescription;
+import org.example.domain.UserProfile;
+import org.example.services.AccountService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,23 +21,42 @@ import java.util.List;
 @WebServlet("/")
 public class MainServlet extends HttpServlet {
 
+    private AccountService service = AccountService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
+        String sessionId = req.getSession().getId();
+        UserProfile user = service.getUserBySessionId(sessionId);
+        if (user == null) {
+            resp.sendRedirect("login");
+            return;
+        }
         String parameter = req.getParameter("path");
+
         String defaultPath = System.getProperty("user.home");
+
+        defaultPath = defaultPath + System.getProperty("file.separator") + "filemanager" + System.getProperty("file.separator") + user.getLogin();
+        File userDefaultPath = new File(defaultPath);
+        if (!userDefaultPath.exists())
+            userDefaultPath.mkdirs();
+
         String openPath;
-        if(parameter == null || parameter.isEmpty()){
+        if (parameter == null || parameter.isEmpty()) {
             openPath = defaultPath;
-        }else{
+        } else {
             openPath = parameter;
         }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
+
+        if (!openPath.contains(defaultPath))
+            openPath = defaultPath;
+
         File file = new File(openPath);
+
         File[] files = file.listFiles();
         if (files == null) {
             resp.sendError(404, "File not found");
