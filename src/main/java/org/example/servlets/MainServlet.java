@@ -37,7 +37,7 @@ public class MainServlet extends HttpServlet {
 
         String defaultPath = System.getProperty("user.home");
 
-        defaultPath = defaultPath + System.getProperty("file.separator") + "filemanager" + System.getProperty("file.separator") + user.getLogin();
+        defaultPath = defaultPath + System.getProperty("file.separator") + user.getLogin();
         File userDefaultPath = new File(defaultPath);
         if (!userDefaultPath.exists())
             userDefaultPath.mkdirs();
@@ -51,8 +51,8 @@ public class MainServlet extends HttpServlet {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
-
-        if (!openPath.contains(defaultPath))
+        File absoluteFile = new File(openPath);
+        if (!absoluteFile.getCanonicalPath().contains(defaultPath))
             openPath = defaultPath;
 
         File file = new File(openPath);

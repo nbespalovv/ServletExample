@@ -30,7 +30,7 @@ public class DownloadServlet extends HttpServlet{
         }
         String defaultPath = System.getProperty("user.home");
 
-        defaultPath = defaultPath + System.getProperty("file.separator") + "filemanager" + System.getProperty("file.separator") + user.getLogin();
+        defaultPath = defaultPath + System.getProperty("file.separator") + user.getLogin();
         String parameter = req.getParameter("path");
         String fileName = Paths.get(parameter).getFileName().toString();
 
