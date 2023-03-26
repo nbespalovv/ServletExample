@@ -3,6 +3,8 @@ package org.example.services;
 import com.mysql.cj.conf.DatabaseUrlContainer;
 import org.example.domain.DatabaseConnectivity;
 import org.example.domain.UserProfile;
+import org.example.orm.UserProfileDAO;
+import org.example.orm.UserProfileDAOImpl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,27 +21,30 @@ public class AccountService {
         return singleton;
     }
 
-    private final DatabaseConnectivity dbc;
+    //private final DatabaseConnectivity dbc;
+    private static UserProfileDAO dao = new UserProfileDAOImpl();
     private final Map<String, UserProfile> sessionIdToProfile;
 
     private AccountService() {
-        this.dbc = new DatabaseConnectivity();
+        //this.dbc = new DatabaseConnectivity();
         this.sessionIdToProfile = new HashMap<>();
     }
 
     public void addNewUser(UserProfile userProfile) {
-        try {
+        dao.add(userProfile);
+        /*try {
             String query = String.format("INSERT INTO `users` (`login`, `password`, `email`) VALUES ('%s', '%s', '%s');",
                     userProfile.getLogin(), userProfile.getPass(), userProfile.getEmail());
             dbc.getStatement().executeUpdate(query);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     public UserProfile getUserByLogin(String login) {
-        String query = String.format("SELECT * FROM users WHERE login='%s'", login);
+        return dao.getByLogin(login);
+        /*String query = String.format("SELECT * FROM users WHERE login='%s'", login);
         try {
             ResultSet rs = dbc.getStatement().executeQuery(query);
             rs.next();
@@ -49,7 +54,7 @@ public class AccountService {
             return user;
         } catch (SQLException e) {
             return null;
-        }
+        }*/
     }
 
     public UserProfile getUserBySessionId(String sessionId) {
